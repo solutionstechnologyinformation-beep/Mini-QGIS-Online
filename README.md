@@ -11,8 +11,10 @@ cargo build
 cargo run
 ```
 
-O servidor será iniciado na porta 8000. Acesse http://localhost:8000 para ver a página inicial.
+O servidor será iniciado na porta definida pela variável de ambiente `PORT` (padrão 8000). Acesse http://localhost:PORT para ver a página inicial.
 
 ## Deploy
 
-Este projeto pode ser implantado no Render.com ou outras plataformas que suportam Rust. Configure o comando de start como `./target/release/mini-qgis-online` ou similar.
+Este projeto pode ser implantado no Render.com ou outras plataformas que suportam Rust. Configure:
+- Build Command: `cargo build --release`
+- Start Command: `./target/release/mini-qgis-online`
