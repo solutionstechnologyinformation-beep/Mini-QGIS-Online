@@ -1,22 +1,27 @@
-#[macro_use] extern crate rocket;
-
+use actix_web::{web, App, HttpServer, HttpResponse};
 use std::env;
-use rocket::fs::{FileServer, relative};
 
-#[launch]
-fn rocket() -> _ {
-    let port: u16 = env::var("PORT")
+async fn index() -> HttpResponse {
+    let html = include_str!("../static/index.html");
+    HttpResponse::Ok()
+        .content_type("text/html; charset=utf-8")
+        .body(html)
+}
+
+#[actix_web::main]
+async fn main() -> std::io::Result<()> {
+    let port = env::var("PORT")
         .unwrap_or_else(|_| "8000".to_string())
-        .parse()
+        .parse::<u16>()
         .unwrap_or(8000);
 
-    let config = rocket::Config {
-        port,
-        address: std::net::IpAddr::V4(std::net::Ipv4Addr::new(0, 0, 0, 0)),
-        ..rocket::Config::default()
-    };
+    println!("Iniciando servidor na porta {}", port);
 
-    rocket::build()
-        .configure(config)
-        .mount("/", FileServer::from(relative!("static")))
+    HttpServer::new(|| {
+        App::new()
+            .route("/", web::get().to(index))
+    })
+    .bind(("0.0.0.0", port))?
+    .run()
+    .await
 }

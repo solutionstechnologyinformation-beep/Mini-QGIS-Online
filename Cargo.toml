@@ -3,5 +3,11 @@ name = "mini-qgis-online"
 version = "0.1.0"
 edition = "2021"
 
+[[bin]]
+name = "mini-qgis-online"
+path = "src/main.rs"
+
 [dependencies]
-rocket = "0.5.0"
+actix-web = "4.4"
+actix-rt = "2.9"
+tokio = { version = "1.35", features = ["rt-multi-thread"] }

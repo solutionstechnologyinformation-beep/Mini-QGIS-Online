@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: mini-qgis-online
+    env: rust
+    plan: free
+    buildCommand: cargo build --release
+    startCommand: ./target/release/mini-qgis-online
+    envVars:
+      - key: PORT
+        value: 8000
