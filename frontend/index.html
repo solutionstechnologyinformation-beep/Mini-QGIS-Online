@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>Mini QGIS Online</title>
+
+<link rel="stylesheet"
+href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+<h2>Mini QGIS Online</h2>
+
+<div id="map"></div>
+
+<br>
+
+X:
+<input id="x">
+
+Y:
+<input id="y">
+
+Origem
+<select id="src">
+<option value="4326">WGS84</option>
+<option value="4674">SIRGAS2000</option>
+<option value="31983">UTM 23S</option>
+</select>
+
+Destino
+<select id="dst">
+<option value="4326">WGS84</option>
+<option value="4674">SIRGAS2000</option>
+<option value="31983">UTM 23S</option>
+</select>
+
+<button onclick="convert()">Converter</button>
+
+<p id="result"></p>
+
+<script src="map.js"></script>
+<script src="converter.js"></script>
+
+</body>
+</html>
