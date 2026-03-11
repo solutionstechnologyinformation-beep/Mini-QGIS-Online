@@ -3,12 +3,14 @@
 
 <head>
 
-<title>Mini QGIS Online</title>
+<title>Mini QGIS Web</title>
 
 <link rel="stylesheet"
 href="https://unpkg.com/leaflet/dist/leaflet.css"/>
 
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/@turf/turf@6/turf.min.js"></script>
 
 <link rel="stylesheet" href="style.css">
 
@@ -16,16 +18,18 @@ href="https://unpkg.com/leaflet/dist/leaflet.css"/>
 
 <body>
 
-<h2>Mini QGIS Online</h2>
+<h2>Mini QGIS Web</h2>
 
 <div id="map"></div>
 
-<br>
+<div class="panel">
 
-X:
+<h3>Conversor de Coordenadas</h3>
+
+X
 <input id="x">
 
-Y:
+Y
 <input id="y">
 
 Origem
@@ -46,8 +50,15 @@ Destino
 
 <p id="result"></p>
 
+<h3>Importar arquivo GIS</h3>
+
+<input type="file" id="file">
+
+</div>
+
 <script src="map.js"></script>
 <script src="converter.js"></script>
+<script src="upload.js"></script>
 
 </body>
 </html>

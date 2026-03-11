@@ -1,14 +1,13 @@
 body{
-
 font-family:Arial;
-text-align:center;
-
+margin:0;
 }
 
 #map{
+height:600px;
+}
 
-height:500px;
-width:90%;
-margin:auto;
-
+.panel{
+padding:10px;
+background:#f2f2f2;
 }
