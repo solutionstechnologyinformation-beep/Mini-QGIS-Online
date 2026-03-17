@@ -1,1 +1,11 @@
-"""Spatial utilities for coordinate transformations and geographic operations."""
+from pyproj import Transformer
+
+def convert(x,y,src,dst):
+
+    transformer = Transformer.from_crs(
+        src,
+        dst,
+        always_xy=True
+    )
+
+    return transformer.transform(x,y)

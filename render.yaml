@@ -1,10 +1,12 @@
 services:
   - type: web
     name: mini-qgis-online
-    env: rust
+    env: python
     plan: free
-    buildCommand: cargo build --release
-    startCommand: ./target/release/mini-qgis-online
+    buildCommand: pip install -r backend/requirements.txt
+    startCommand: cd backend && python app.py
     envVars:
+      - key: FLASK_ENV
+        value: production
       - key: PORT
         value: 8000

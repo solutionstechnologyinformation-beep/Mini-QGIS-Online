@@ -1,64 +1,82 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-BR">
 
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mini QGIS Online - Conversor de Coordenadas</title>
 
-<title>Mini QGIS Web</title>
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 
-<link rel="stylesheet"
-href="https://unpkg.com/leaflet/dist/leaflet.css"/>
-
-<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-
-<script src="https://cdn.jsdelivr.net/npm/@turf/turf@6/turf.min.js"></script>
-
-<link rel="stylesheet" href="style.css">
-
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
+    <header>
+        <h1>🗺️ Mini QGIS Online</h1>
+        <p>Ferramenta GIS web para conversão de coordenadas e visualização de mapas</p>
+    </header>
 
-<h2>Mini QGIS Web</h2>
+    <main>
+        <section class="map-section">
+            <h2>Mapa Interativo</h2>
+            <p class="hint">Clique no mapa para obter as coordenadas</p>
+            <div id="map"></div>
+        </section>
 
-<div id="map"></div>
+        <section class="converter-section">
+            <h2>Conversor de Coordenadas</h2>
+            
+            <div class="form-group">
+                <label for="x">Coordenada X (Longitude):</label>
+                <input type="number" id="x" placeholder="Ex: -55.5" step="0.000001">
+            </div>
 
-<div class="panel">
+            <div class="form-group">
+                <label for="y">Coordenada Y (Latitude):</label>
+                <input type="number" id="y" placeholder="Ex: -15.5" step="0.000001">
+            </div>
 
-<h3>Conversor de Coordenadas</h3>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="src">Sistema de Origem:</label>
+                    <select id="src">
+                        <option value="">-- Selecione --</option>
+                        <option value="4326">WGS84 (EPSG:4326)</option>
+                        <option value="4674">SIRGAS2000 (EPSG:4674)</option>
+                        <option value="31983">UTM 23S (EPSG:31983)</option>
+                    </select>
+                </div>
 
-X
-<input id="x">
+                <div class="form-group">
+                    <label for="dst">Sistema de Destino:</label>
+                    <select id="dst">
+                        <option value="">-- Selecione --</option>
+                        <option value="4326">WGS84 (EPSG:4326)</option>
+                        <option value="4674">SIRGAS2000 (EPSG:4674)</option>
+                        <option value="31983">UTM 23S (EPSG:31983)</option>
+                    </select>
+                </div>
+            </div>
 
-Y
-<input id="y">
+            <button id="convertBtn" onclick="convert()" class="btn-convert">Converter</button>
 
-Origem
-<select id="src">
-<option value="4326">WGS84</option>
-<option value="4674">SIRGAS2000</option>
-<option value="31983">UTM 23S</option>
-</select>
+            <div id="result" class="result-box"></div>
+        </section>
+    </main>
 
-Destino
-<select id="dst">
-<option value="4326">WGS84</option>
-<option value="4674">SIRGAS2000</option>
-<option value="31983">UTM 23S</option>
-</select>
+    <footer>
+        <p>Mini QGIS Online © 2024 | Desenvolvido com Flask, Leaflet e Pyproj</p>
+    </footer>
 
-<button onclick="convert()">Converter</button>
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-<p id="result"></p>
-
-<h3>Importar arquivo GIS</h3>
-
-<input type="file" id="file">
-
-</div>
-
-<script src="map.js"></script>
-<script src="converter.js"></script>
-<script src="upload.js"></script>
-
+    <!-- Custom Scripts -->
+    <script src="map.js"></script>
+    <script src="converter.js"></script>
 </body>
+
 </html>
