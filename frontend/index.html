@@ -28,6 +28,9 @@
 
         <section class="converter-section">
             <h2>Conversor de Coordenadas</h2>
+            <p>Converta coordenadas de um único ponto ou de um arquivo completo.</p>
+
+            <h3>Converter Ponto Único</h3>
             
             <div class="form-group">
                 <label for="x">Coordenada X (Longitude):</label>
@@ -44,9 +47,6 @@
                     <label for="src">Sistema de Origem:</label>
                     <select id="src">
                         <option value="">-- Selecione --</option>
-                        <option value="4326">WGS84 (EPSG:4326)</option>
-                        <option value="4674">SIRGAS2000 (EPSG:4674)</option>
-                        <option value="31983">UTM 23S (EPSG:31983)</option>
                     </select>
                 </div>
 
@@ -54,16 +54,31 @@
                     <label for="dst">Sistema de Destino:</label>
                     <select id="dst">
                         <option value="">-- Selecione --</option>
-                        <option value="4326">WGS84 (EPSG:4326)</option>
-                        <option value="4674">SIRGAS2000 (EPSG:4674)</option>
-                        <option value="31983">UTM 23S (EPSG:31983)</option>
                     </select>
                 </div>
             </div>
 
-            <button id="convertBtn" onclick="convert()" class="btn-convert">Converter</button>
+            <div class="form-group">
+                <label for="systemFilter">Filtrar por Sistema:</label>
+                <select id="systemFilter">
+                    <option value="all">Todos</option>
+                    <option value="WGS84">WGS84</option>
+                    <option value="SIRGAS2000">SIRGAS2000</option>
+                    <option value="SAD69">SAD69</option>
+                </select>
+            </div>
 
-            <div id="result" class="result-box"></div>
+            <button id="convertBtn" onclick="convertSingle()" class="btn-convert">Converter Ponto</button>
+
+            <h3>Converter Arquivo de Coordenadas</h3>
+            <div class="form-group">
+                <label for="fileUpload">Upload de Arquivo (.txt, .csv):</label>
+                <input type="file" id="fileUpload" accept=".txt,.csv">
+            </div>
+            <button id="convertFileBtn" onclick="convertFile()" class="btn-convert">Converter Arquivo</button>
+            <button id="downloadFileBtn" class="btn-download" style="display:none;">Baixar Resultados</button>
+
+            <div id="fileResult" class="result-box"></div>
         </section>
     </main>
 

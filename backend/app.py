@@ -2,7 +2,11 @@ import os
 from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 from pyproj import Transformer
+from werkzeug.utils import secure_filename
+from backend.file_processor import process_coordinate_file, format_results_for_export
+import pandas as pd # Para lidar com CSV/TXT de forma robusta
 from dotenv import load_dotenv
+from backend.epsg_codes import EPSG_CODES
 
 # Carregar variáveis de ambiente
 load_dotenv()
@@ -88,6 +92,55 @@ def convert():
         return jsonify({'error': f'Erro interno do servidor: {str(e)}'}), 500
 
 
+@app.route('/convert_file', methods=['POST'])
+def convert_file():
+    try:
+        if 'file' not in request.files:
+            return jsonify({'error': 'Nenhum arquivo enviado'}), 400
+
+        file = request.files['file']
+        src = request.form.get('src')
+        dst = request.form.get('dst')
+
+        if not file or not src or not dst:
+            return jsonify({'error': 'Arquivo, sistema de origem ou destino não fornecidos'}), 400
+
+        if not (src.isdigit() and dst.isdigit()):
+            return jsonify({'error': 'Códigos EPSG de origem e destino devem ser numéricos'}), 400
+
+        file_content = file.read().decode('utf-8')
+        
+        # Usar pandas para ler o arquivo de forma mais flexível
+        # Tentar inferir o separador
+        try:
+            df = pd.read_csv(io.StringIO(file_content), sep=None, engine='python', header=None)
+        except Exception as e:
+            return jsonify({'error': f'Erro ao ler o arquivo: {str(e)}. Verifique o formato (CSV/TXT).'}), 400
+
+        # Assumir que as coordenadas X e Y estão nas duas primeiras colunas
+        if df.shape[1] < 2:
+            return jsonify({'error': 'O arquivo deve ter pelo menos duas colunas para as coordenadas X e Y'}), 400
+
+        results = []
+        for index, row in df.iterrows():
+            try:
+                x = float(row[0])
+                y = float(row[1])
+                converted_x, converted_y = convert(x, y, src, dst)
+                results.append({"original_x": x, "original_y": y, "converted_x": converted_x, "converted_y": converted_y})
+            except (ValueError, IndexError):
+                continue # Ignorar linhas mal formatadas
+
+        if not results:
+            return jsonify({'error': 'Nenhuma coordenada válida encontrada ou convertida no arquivo'}), 400
+
+        # Retornar os resultados em um formato que o frontend possa processar ou baixar
+        # Por enquanto, retornaremos como JSON. O frontend pode então gerar o download.
+        return jsonify(results)
+
+    except Exception as e:
+        return jsonify({'error': f'Erro interno do servidor ao processar arquivo: {str(e)}'}), 500
+
 @app.route('/health', methods=['GET'])
 def health():
     """Endpoint de verificação de saúde da API."""
@@ -99,6 +152,11 @@ def not_found(error):
     """Tratador para erros 404."""
     return jsonify({'error': 'Endpoint não encontrado'}), 404
 
+
+@app.route("/epsg_codes", methods=["GET"])
+def get_epsg_codes():
+    """Retorna os códigos EPSG disponíveis."""
+    return jsonify(EPSG_CODES)
 
 @app.errorhandler(500)
 def internal_error(error):

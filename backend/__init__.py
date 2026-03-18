@@ -9,3 +9,4 @@ scripts are executed from the project root.
 from .spatial import convert
 from .upload import process_upload, allowed_file
 from .raster import info
+from .file_processor import process_coordinate_file, format_results_for_export
