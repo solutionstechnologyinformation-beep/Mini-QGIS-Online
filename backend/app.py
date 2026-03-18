@@ -1,9 +1,9 @@
 import os
+import io
 from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 from pyproj import Transformer
 from werkzeug.utils import secure_filename
-from backend.file_processor import process_coordinate_file, format_results_for_export
 from backend.upload import process_upload, allowed_file as allowed_spatial_file
 import pandas as pd # Para lidar com CSV/TXT de forma robusta
 from dotenv import load_dotenv
@@ -127,10 +127,16 @@ def convert_file():
             try:
                 x = float(row[0])
                 y = float(row[1])
-                converted_x, converted_y = convert(x, y, src, dst)
+                # Criar transformador para cada coordenada
+                transformer = Transformer.from_crs(
+                    f"EPSG:{src}",
+                    f"EPSG:{dst}",
+                    always_xy=True
+                )
+                converted_x, converted_y = transformer.transform(x, y)
                 results.append({"original_x": x, "original_y": y, "converted_x": converted_x, "converted_y": converted_y})
-            except (ValueError, IndexError):
-                continue # Ignorar linhas mal formatadas
+            except (ValueError, IndexError, Exception):
+                continue # Ignorar linhas mal formatadas ou com erro de transformacao
 
         if not results:
             return jsonify({'error': 'Nenhuma coordenada válida encontrada ou convertida no arquivo'}), 400
