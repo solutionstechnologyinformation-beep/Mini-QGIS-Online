@@ -5,7 +5,6 @@ FROM python:3.11-slim-bookworm
 WORKDIR /app
 
 # Instala as dependências do sistema necessárias para geopandas, rasterio e pyproj
-# O uso de bookworm garante versões mais recentes das bibliotecas GIS
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     libgdal-dev \
@@ -23,12 +22,13 @@ ENV PROJ_LIB=/usr/share/proj
 # Copia o arquivo de requisitos e instala as dependências
 COPY backend/requirements.txt .
 RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir -r requirements.txt
+    pip install --no-cache-dir -r requirements.txt && \
+    pip install --no-cache-dir gunicorn
 
 # Copia o restante do código da aplicação
 COPY . .
 
-# Garante que o diretório backend esteja no PYTHONPATH
+# Garante que o diretório atual esteja no PYTHONPATH
 ENV PYTHONPATH=/app
 
 # Define variáveis de ambiente para o Flask
@@ -39,8 +39,7 @@ ENV PORT=5000
 # Expõe a porta que o Flask vai usar
 EXPOSE 5000
 
-# Comando para iniciar a aplicação Flask usando Gunicorn (mais estável para produção)
-# Se o gunicorn não estiver no requirements, instalamos aqui ou usamos o python diretamente
-RUN pip install --no-cache-dir gunicorn
-
-CMD ["gunicorn", "--bind", "0.0.0.0:5000", "backend.app:app"]
+# Comando para iniciar a aplicação Flask usando Gunicorn
+# Usamos 'backend.app:app' porque o diretório 'backend' é um pacote (tem __init__.py)
+# e estamos no diretório /app (WORKDIR)
+CMD ["gunicorn", "--bind", "0.0.0.0:5000", "--workers", "2", "--timeout", "120", "backend.app:app"]
